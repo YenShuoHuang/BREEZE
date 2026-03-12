@@ -1,4 +1,4 @@
-# BREEZE 🌬️
+# BREEZE
 ## Bioclimatic Route Evaluation for Environmental haZard avoidancE
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
