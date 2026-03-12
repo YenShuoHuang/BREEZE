@@ -9,7 +9,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 BREEZE is a comprehensive framework that evaluates environmental hazard exposure (heat stress, cold stress, air pollution, and greenery) along urban soft mobility networks (pedestrian paths, cycling lanes). It serves two complementary purposes:
 
@@ -23,7 +23,7 @@ The framework is demonstrated on the **Brussels-Capital Region (BCR)** as a case
 
 ---
 
-## 🗂️ Repository Structure
+## Repository Structure
 
 ```
 BREEZE/
@@ -48,7 +48,7 @@ The notebook numbering corresponds to the sections and appendices in the paper.
 
 ---
 
-## 🔄 Workflow
+## Workflow
 
 The full pipeline proceeds in the following order:
 
@@ -75,7 +75,7 @@ The full pipeline proceeds in the following order:
 
 ---
 
-## 📓 Notebook Descriptions
+## Notebook Descriptions
 
 ### `2_2_AppA_DSM_preprocessing.ipynb` — DSM/DTM Pre-processing
 Implements **Appendix A** of the paper. Pre-processes raw LiDAR-derived Digital Surface Model (DSM) and Digital Terrain Model (DTM) data to extract:
@@ -158,7 +158,7 @@ Implements **Section 2.6** of the paper. Builds the interactive web-based avoida
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 ### Prerequisites
 
@@ -196,7 +196,7 @@ export QT_QPA_PLATFORM=offscreen
 
 ---
 
-## 📦 Data
+## Data
 
 The input data used in the BCR case study are **not included** in this repository due to size and licensing constraints. The table below lists all required datasets with links to their sources.
 
@@ -240,7 +240,7 @@ data/
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ### Step 1 — Pre-process DSM/DTM
 Open and run `2_2_AppA_DSM_preprocessing.ipynb`. Update the path variables at the top of the notebook to point to your raw DSM and DTM files.
@@ -268,7 +268,7 @@ Open `2_6_Avoidance_Routing.ipynb`. Configure your OpenRouteService API key and 
 
 ---
 
-## 🧮 Key Methods
+## Key Methods
 
 ### Dynamic Exposure Assessment
 Exposure is computed separately for daytime (8–16h) and nighttime (16–24h) windows and weighted by population:
@@ -295,7 +295,7 @@ Segments exceeding exposure thresholds are marked as avoidance segments. The Ope
 
 ---
 
-## 📊 Results Summary (BCR Case Study)
+## Results Summary (BCR Case Study)
 
 - **178** 1 km × 1 km grid cells covering the BCR
 - **730** time steps (365 days × 2 periods) at **2 m** spatial resolution
@@ -306,7 +306,7 @@ Segments exceeding exposure thresholds are marked as avoidance segments. The Ope
 
 ---
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 - Air pollution data (EXPANSE) lacks intraday temporal variation; AQI exposure fluctuations are primarily driven by population dynamics.
 - Traffic signal delays at intersections are not accounted for in routing.
@@ -317,7 +317,7 @@ Segments exceeding exposure thresholds are marked as avoidance segments. The Ope
 
 ---
 
-## 📚 Citation
+## Citation
 
 If you use BREEZE in your research, please cite the associated paper (citation to be updated upon publication):
 
@@ -346,7 +346,7 @@ Related work from the same research group:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions and adaptations for other cities are welcome. Please open an issue to discuss proposed changes, or submit a pull request.
 
@@ -357,13 +357,13 @@ When adapting to a new city:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 This work uses:
 - [UMEP](https://umep-docs.readthedocs.io/) — Urban Multi-scale Environmental Predictor
