@@ -34,6 +34,7 @@ BREEZE/
 ├── 2_3_UrbClim1km_2_epw.ipynb           # Section 2.3: UrbClim data → EPW format for SOLWEIG
 ├── SOLWEIG.py                            # Section 2.3: HPC batch SOLWEIG runner + UTCI computation
 ├── SOLWEIG.sh                            # SLURM job array script for HPC deployment
+├── 2_3_UTCI_postprocessing.ipynb        # Section 2.3: UTCI merging, stress accumulation & segment extraction
 ├── 2_6_Avoidance_Routing.ipynb          # Section 2.6: Avoidance route mapping web application
 │
 ├── data/                                 # (Not included — see Data section below)
@@ -69,6 +70,8 @@ The full pipeline proceeds in the following order:
     │
     └─ All above ────────► SOLWEIG.py + SOLWEIG.sh  (HPC)
                                ↓ Tmrt rasters → UTCI rasters (2m resolution, 730 time steps)
+                           2_3_UTCI_postprocessing.ipynb
+                               ↓ Merged city-wide UTCI, heat/cold degree hours, segment extraction
                            2_6_Avoidance_Routing.ipynb
                                ↓ Segment-level exposure aggregation + web routing application
 ```
@@ -139,6 +142,22 @@ Implements **Section 2.3** UTCI computation at city scale. Designed for HPC depl
 - Loads required modules: QGIS 3.28.1, pythermalcomfort, rasterio
 
 **Key outputs:** `UTCI_<timestep>_clipped.tif` rasters per grid cell (2 m resolution)
+
+---
+
+### `2_3_UTCI_postprocessing.ipynb` — UTCI Post-processing & Segment Extraction
+Implements **Section 2.3** post-processing steps. Bridges the raw per-grid UTCI raster outputs from SOLWEIG with the segment-level exposure data required for routing and cluster analysis. Key steps:
+
+1. **Merge UTCI rasters** — mosaics all 178 per-grid `UTCI_*_clipped.tif` files into city-wide rasters using GDAL, for each of the 730 time steps.
+2. **Compute heat and cold degree hours** — accumulates monthly and annual heat stress (UTCI > 26 °C) and cold stress (UTCI < 9 °C) as degree-hour totals per pixel, producing seasonal and annual stress maps.
+3. **Clip outputs to study boundary** — clips city-wide stress rasters to the BCR administrative boundary using QGIS processing tools.
+4. **Extract segment-level values** — clips UTCI and Tmrt rasters by bike route vectors, then spatially averages raster values within each 50 m buffered route segment, producing per-segment time series of air temperature (Tair) and mean radiant temperature (Tmrt).
+5. **Validation plots** — visualises Tair and Tmrt time series per grid zone and compares pre-aggregation vs post-aggregation approaches for selected grid cells.
+
+Some cells in this notebook are annotated for **QGIS console execution** (clipping operations) while others run in standard Jupyter environments.
+
+**Key inputs:** `UTCI_*_clipped.tif` per grid cell, bike route vectors, BCR boundary polygon  
+**Key outputs:** City-wide annual/monthly heat stress rasters (`heat_stress_YYYY.tif`, `cold_stress_YYYY.tif`), per-segment Tair/Tmrt CSV time series
 
 ---
 
@@ -263,7 +282,10 @@ For a **local test** on a single grid cell:
 python3 SOLWEIG.py 0
 ```
 
-### Step 5 — Build the routing application
+### Step 5 — Post-process UTCI outputs
+Open `2_3_UTCI_postprocessing.ipynb`. Run the merging cells to mosaic per-grid UTCI rasters into city-wide files, then compute annual and monthly heat/cold degree hours. Clipping cells require a QGIS console environment. Finally, run the segment extraction cells to produce the per-segment Tair/Tmrt CSV files needed for the routing application.
+
+### Step 6 — Build the routing application
 Open `2_6_Avoidance_Routing.ipynb`. Configure your OpenRouteService API key and the paths to the aggregated UTCI/AQI segment data, then run all cells to generate the interactive HTML map.
 
 ---
