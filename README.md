@@ -30,7 +30,7 @@ BREEZE/
 │
 ├── 2_2_AppA_DSM_preprocessing.ipynb     # Appendix A: DSM/DTM pre-processing & SVF computation
 ├── 2_2_AppB_LULC_preprocessing.ipynb    # Appendix B: Multi-source LULC dataset generation
-├── 2_3_UrbClim_100m_2_1km.ipynb         # Section 2.3: UrbClim downscaling (100m -> 1km grids)
+├── 2_3_UrbClim_100m_2_1km.ipynb         # Section 2.3: UrbClim upscaling (100m -> 1km grids)
 ├── 2_3_UrbClim1km_2_epw.ipynb           # Section 2.3: UrbClim data -> EPW format for SOLWEIG
 ├── SOLWEIG.py                            # Section 2.3: HPC batch SOLWEIG runner + UTCI computation
 ├── SOLWEIG.sh                            # SLURM job array script for HPC deployment
