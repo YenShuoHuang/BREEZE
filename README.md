@@ -284,54 +284,6 @@ Open `2_6_Avoidance_Routing.ipynb`. Configure your OpenRouteService API key and 
 
 ---
 
-## Key Methods
-
-### Dynamic Exposure Assessment
-Exposure is computed separately for daytime (8-16h) and nighttime (16-24h) windows and weighted by population:
-
-```
-Exp_dynamic = dt x Factor_8-16 x Pop_day  +  dt x Factor_16-24 x Pop_night
-Exp_static  = 2dt x Factor_8-24 x Pop_static
-```
-
-### Thermal Comfort — UTCI
-Computed using SOLWEIG (for Tmrt at 2 m resolution) and pythermalcomfort (for UTCI from Tmrt, air temperature, wind speed, and relative humidity). Heat stress is defined as UTCI > 26 °C; cold stress as UTCI < 9 °C.
-
-### Air Quality — AQI
-Individual pollutant AQI values (NO2, PM2.5, PM10, O3) are computed from concentration data using standard EU/US breakpoints. The overall AQI is `max(AQI_NO2, AQI_PM2.5, AQI_PM10, AQI_O3)`. Air pollution stress is defined as AQI > 50.
-
-### Route Segmentation
-Soft mobility networks are divided into **50 m segments** with a **7 m buffer** (14 m total width). Environmental variables are spatially averaged within each buffered segment. Segments with > 35% building coverage or < 10 m2 area are excluded.
-
-### Cluster Analysis
-K-means clustering (k determined by silhouette score) on annual average segment indicators (excluding highly collinear pairs, |r| > 0.8 by Spearman correlation) identifies homogeneous route segment types for targeted urban intervention.
-
-### Avoidance Routing
-Segments exceeding exposure thresholds are marked as avoidance segments. The OpenRouteService API is called with user-defined avoidance rates to return optimised routes that minimise time spent in high-stress corridors.
-
----
-
-## Results Summary (BCR Case Study)
-
-- **178** 1 km x 1 km grid cells covering the BCR
-- **730** time steps (365 days x 2 periods) at **2 m** spatial resolution
-- **9 route segment clusters** identified; priority clusters: heat-stressed open streets/plazas (cluster 5), air-polluted inner boulevards (cluster 4), cold/green peripheral segments (cluster 1)
-- Dynamic population weighting doubled estimated heat exposure in peak-stress clusters compared to static methods
-- Avoidance routing reduced strong heat stress (UTCI > 32 °C) by **up to 20%** with < 1 min extra travel time
-- Avoidance routing reduced air pollution stress by **up to 36%** with < 2 min extra travel time
-
----
-
-## Known Limitations
-
-- Air pollution data (EXPANSE) lacks intraday temporal variation; AQI exposure fluctuations are primarily driven by population dynamics.
-- Traffic signal delays at intersections are not accounted for in routing.
-- Wind speed is assumed uniform per 1 km grid; micro-scale wind variations are not modelled.
-- Population data do not distinguish vulnerable sub-groups (elderly, children); no school/care-home weighting applied.
-- Synergistic effects between simultaneous stressors are not modelled.
-- Routing assumes outdoor travel only; indoor/semi-indoor passages (e.g., arcades) are excluded.
-
----
 
 ## Citation
 
