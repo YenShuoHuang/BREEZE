@@ -341,4 +341,4 @@ This work uses:
 - [Copernicus Climate Change Service](https://cds.climate.copernicus.eu/) — UrbClim and ERA5 data
 - [ESA WorldCover](https://doi.org/10.5281/zenodo.7254221) — Global land cover
 
-Simulations were performed on the **Lucia HPC cluster** (UCLouvain).
+Simulations were performed on the **Manneback HPC cluster** (Belgium).
