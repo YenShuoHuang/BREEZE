@@ -5,7 +5,6 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![QGIS 3.28](https://img.shields.io/badge/QGIS-3.28-green.svg)](https://qgis.org/)
 
-> A multi-dimensional environmental exposure assessment framework for urban soft mobility routes, integrating thermal comfort modeling, air quality assessment, dynamic population weighting, and personalized avoidance routing.
 
 ---
 
