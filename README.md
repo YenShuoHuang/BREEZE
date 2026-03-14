@@ -298,7 +298,7 @@ If you use BREEZE in your research, please cite the associated paper (citation t
 ```bibtex
 @article{breeze2025,
   title   = {{BREEZE}: Bioclimatic Route Evaluation for Environmental {haZard} avoidancE},
-  author  = {Huang, Ye-Sheng and Llaguno-Munitxa, Mikel and Manoli, Gabriele},
+  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
   journal = {under review},
   year    = {2025}
 }
@@ -308,7 +308,7 @@ Related work from the same research group:
 ```bibtex
 @article{huang2025dynamic,
   title   = {Towards Dynamic Urban Environmental Exposure Assessments: A Case Study of the Brussels Capital Region},
-  author  = {Huang, Y.-S. and Llaguno-Munitxa, M. and Manoli, G.},
+  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Llaguno-Munitxa, Maider},
   journal = {Journal of Physics: Conference Series},
   volume  = {3140},
   number  = {12},
