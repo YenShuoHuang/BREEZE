@@ -10,17 +10,17 @@ This is the first public release of **BREEZE (Bioclimatic Route Evaluation for E
 
 | File | Description |
 |------|-------------|
-| `2_2_1_AppA_DSM_object_removing.ipynb` | Vehicle removal from DSM using circularity filter (Appendix A) |
-| `2_2_2_AppB_LULC_preprocessing.ipynb` | Multi-source LULC generation for UMEP (Appendix B) |
-| `2_2_3_Static_dataset_2_nc.ipynb` | GHS Built-up Volume to NetCDF on 1km grid (Section 2.2) |
-| `2_3_1_Meteorological_dataset_2_nc.ipynb` | UrbClim meteorological data consolidation to NetCDF (Section 2.3) |
-| `2_3_2_DSM_split_1km.ipynb` | DSM resampling and per-grid clipping in QGIS (Section 2.3) |
-| `2_3_3_UrbClim_100m_2_1km.ipynb` | UrbClim meteorological regridding 100m -> 1km (Section 2.3) |
-| `2_3_4_UrbClim1km_2_epw.ipynb` | Meteorological data conversion to EPW format for SOLWEIG (Section 2.3) |
+| `2.2.1_AppA_DSM_object_removing.ipynb` | Vehicle removal from DSM using circularity filter (Appendix A) |
+| `2.2.2_AppB_LULC_preprocessing.ipynb` | Multi-source LULC generation for UMEP (Appendix B) |
+| `2.2.3_Static_dataset_2_nc.ipynb` | GHS Built-up Volume to NetCDF on 1km grid (Section 2.2) |
+| `2.3.1_Meteorological_dataset_2_nc.ipynb` | UrbClim meteorological data consolidation to NetCDF (Section 2.3) |
+| `2.3.2_DSM_split_1km.ipynb` | DSM resampling and per-grid clipping in QGIS (Section 2.3) |
+| `2.3.3_UrbClim_100m_2_1km.ipynb` | UrbClim meteorological regridding 100m -> 1km (Section 2.3) |
+| `2.3.4_UrbClim1km_2_epw.ipynb` | Meteorological data conversion to EPW format for SOLWEIG (Section 2.3) |
 | `SOLWEIG.py` | HPC batch SOLWEIG runner and UTCI computation (Section 2.3) |
 | `SOLWEIG.sh` | SLURM job array script for HPC deployment (Section 2.3) |
-| `2_3_6_UTCI_postprocessing.ipynb` | UTCI merging, heat/cold degree hours accumulation, boundary clipping (Section 2.3) |
-| `2_6_Avoidance_Routing.ipynb` | Avoidance route mapping web application with dual UTCI thresholds (Section 2.6) |
+| `2.3.6_UTCI_postprocessing.ipynb` | UTCI merging, heat/cold degree hours accumulation, boundary clipping (Section 2.3) |
+| `2.6_Avoidance_Routing.ipynb` | Avoidance route mapping web application with dual UTCI thresholds (Section 2.6) |
 
 ---
 
