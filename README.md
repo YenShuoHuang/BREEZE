@@ -17,8 +17,33 @@ BREEZE is a comprehensive framework that evaluates environmental hazard exposure
 
 The framework is demonstrated on the **Brussels-Capital Region (BCR)** as a case study and is designed to be transferable to other urban contexts.
 
-**Associated paper:**
-> *BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE* (under review)
+---
+## Citation
+
+If you use BREEZE in your research, please cite the associated paper (citation to be updated upon publication):
+
+```bibtex
+@article{breeze2025,
+  title   = {BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
+  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
+  journal = {under review},
+  year    = {2025}
+}
+```
+
+Related work from the same research group:
+```bibtex
+@article{huang2025dynamic,
+  title   = {Towards Dynamic Urban Environmental Exposure Assessments: A Case Study of the Brussels Capital Region},
+  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Llaguno-Munitxa, Maider},
+  journal = {Journal of Physics: Conference Series},
+  volume  = {3140},
+  number  = {12},
+  pages   = {122002},
+  year    = {2025},
+  doi     = {10.1088/1742-6596/3140/12/122002}
+}
+```
 
 ---
 
@@ -291,34 +316,7 @@ data/
 ```
 ---
 
-## Citation
 
-If you use BREEZE in your research, please cite the associated paper (citation to be updated upon publication):
-
-```bibtex
-@article{breeze2025,
-  title   = {BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
-  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
-  journal = {under review},
-  year    = {2025}
-}
-```
-
-Related work from the same research group:
-```bibtex
-@article{huang2025dynamic,
-  title   = {Towards Dynamic Urban Environmental Exposure Assessments: A Case Study of the Brussels Capital Region},
-  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Llaguno-Munitxa, Maider},
-  journal = {Journal of Physics: Conference Series},
-  volume  = {3140},
-  number  = {12},
-  pages   = {122002},
-  year    = {2025},
-  doi     = {10.1088/1742-6596/3140/12/122002}
-}
-```
-
----
 
 ## Contributing
 
