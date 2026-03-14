@@ -187,7 +187,7 @@ Note: steps 2-3 require a QGIS console environment.
 ---
 
 ### `2.6_Avoidance_Routing.ipynb` — Avoidance Route Mapping Application
-Implements **Section 2.6** of the paper. Builds the interactive web-based avoidance routing application with dual UTCI threshold analysis (26 °C and 32 °C). Pipeline steps:
+Prior to this notebook, a series of QGIS operations are required but not included in this repository. These include creating buffer zones along soft mobility routes, splitting routes into segments of suitable length, and extracting raster values per segment using the Zonal Statistics function in QGIS. Implements **Section 2.6** of the paper. Builds the interactive web-based avoidance routing application with dual UTCI threshold analysis (26 °C and 32 °C). Pipeline steps:
 1. **Segment-level exposure aggregation** — reads UTCI and AQI rasters, computes mean exposure per 50 m soft mobility segment within a 7 m buffer; supports dual UTCI thresholds and timeline data collection
 2. **IDW heatmap generation** — produces smooth 10 m x 10 m exposure surfaces (heat, air pollution, greenery) via Inverse Distance Weighting with enforced common bounds
 3. **Avoidance routing** — integrates with the OpenRouteService API; avoids segments exceeding UTCI 26 °C or 32 °C or AQI 50, based on user-defined avoidance rates and SVF threshold
