@@ -297,7 +297,7 @@ If you use BREEZE in your research, please cite the associated paper (citation t
 
 ```bibtex
 @article{breeze2025,
-  title   = {{BREEZE}: Bioclimatic Route Evaluation for Environmental {haZard} avoidancE},
+  title   = {BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
   author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
   journal = {under review},
   year    = {2025}
