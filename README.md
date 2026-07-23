@@ -202,7 +202,9 @@ Implements **Section 2.3** post-processing steps. Converts raw per-grid UTCI out
 3. **Clip to study boundary** — clips city-wide stress rasters to the BCR administrative boundary using QGIS processing tools.
 
 Note: steps 2-3 require a QGIS console environment.
+
 **Key inputs:** `UTCI_*_clipped.tif` per grid cell, BCR boundary polygon
+
 **Key outputs:** City-wide annual/monthly heat and cold stress rasters (`heat_stress_YYYY.tif`, `cold_stress_YYYY.tif`)
 
 ---
