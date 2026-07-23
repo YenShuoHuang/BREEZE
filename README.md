@@ -26,8 +26,8 @@ If you use BREEZE in your research, please cite the associated paper (citation t
 @article{breeze2025,
   title   = {BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
   author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
-  journal = {under review},
-  year    = {2025}
+  journal = {Computers, Environment and Urban Systems},
+  year    = {Under Review}
 }
 ```
 
@@ -52,17 +52,16 @@ Related work from the same research group:
 ```
 BREEZE/
 │
-├── 2.2.1_AppA_DSM_object_removing.ipynb    # Section 2.2 / Appendix A: Vehicle removal from DSM
-├── 2.2.2_AppB_LULC_preprocessing.ipynb     # Section 2.2 / Appendix B: Multi-source LULC generation
-├── 2.2.3_Static_dataset_2_nc.ipynb         # Section 2.2: Static datasets (building volume) to NetCDF
-├── 2.3.1_Meteorological_dataset_2_nc.ipynb # Section 2.3: UrbClim meteorological data to NetCDF
-├── 2.3.2_DSM_split_1km.ipynb               # Section 2.3: DSM resampling & per-grid clipping (QGIS)
-├── 2.3.3_UrbClim_100m_2_1km.ipynb          # Section 2.3: UrbClim regridding (100m -> 1km)
-├── 2.3.4_UrbClim1km_2_epw.ipynb            # Section 2.3: UrbClim data -> EPW format for SOLWEIG
-├── SOLWEIG.py                               # Section 2.3: HPC batch SOLWEIG runner + UTCI computation
+├── 2.1.1_AppA_DSM_object_removing.ipynb    # Section 2.1 / Appendix A: Vehicle removal from DSM
+├── 2.1.2_AppB_LULC_preprocessing.ipynb     # Section 2.1 / Appendix B: Multi-source LULC generation
+├── 2.1.3_Static_dataset_2_nc.ipynb         # Section 2.1: Static datasets (building volume) to NetCDF
+├── 2.2.1_Meteorological_dataset_2_nc.ipynb # Section 2.2: UrbClim meteorological data to NetCDF
+├── 2.2.2_DSM_split_1km.ipynb               # Section 2.2: DSM resampling & per-grid clipping (QGIS)
+├── 2.2.3_UrbClim_100m_2_1km.ipynb          # Section 2.2: UrbClim regridding (100m -> 1km)
+├── 2.2.4_UrbClim1km_2_epw.ipynb            # Section 2.2: UrbClim data -> EPW format for SOLWEIG
+├── SOLWEIG.py                               # Section 2.2: HPC batch SOLWEIG runner + UTCI computation
 ├── SOLWEIG.sh                               # SLURM job array script for HPC deployment
-├── 2.3.6_UTCI_postprocessing.ipynb         # Section 2.3: UTCI merging, stress accumulation & clipping
-├── 2.6_Avoidance_Routing.ipynb             # Section 2.6: Avoidance route mapping web application
+├── 2.2.6_UTCI_postprocessing.ipynb         # Section 2.2: UTCI merging, stress accumulation & clipping
 │
 ├── data/                                    # (Not included — see Data section below)
 │   ├── DSM/                                # Digital Surface/Terrain Models per 1km grid
@@ -85,40 +84,38 @@ The full pipeline proceeds in the following order:
 [Raw Data]
     │
     ├─ DSM/DTM (0.5m)
-    │   ├─► 2.2.1_AppA_DSM_object_removing.ipynb
+    │   ├─► 2.1.1_AppA_DSM_object_removing.ipynb
     │   │       ↓ Clean vegetation DSM (vehicle removal, circularity filter)
-    │   └─► 2.3.2_DSM_split_1km.ipynb  (QGIS)
+    │   └─► 2.2.2_DSM_split_1km.ipynb  (QGIS)
     │           ↓ Resampled DSMs (2m), per-grid clipped rasters
     │
     ├─ ESA WorldCover + DSMs + Impervious surfaces
-    │   └─► 2.2.2_AppB_LULC_preprocessing.ipynb
+    │   └─► 2.1.2_AppB_LULC_preprocessing.ipynb
     │           ↓ 7-class UMEP-compatible LULC (10m)
     │
     ├─ GHS Built-up Volume
-    │   └─► 2.2.3_Static_dataset_2_nc.ipynb
+    │   └─► 2.1.3_Static_dataset_2_nc.ipynb
     │           ↓ Building volume NetCDF per 1km grid
     │
     ├─ UrbClim NetCDF (100m)
-    │   ├─► 2.3.1_Meteorological_dataset_2_nc.ipynb
+    │   ├─► 2.2.1_Meteorological_dataset_2_nc.ipynb
     │   │       ↓ Cleaned annual meteorological NetCDF files
-    │   └─► 2.3.3_UrbClim_100m_2_1km.ipynb
+    │   └─► 2.2.3_UrbClim_100m_2_1km.ipynb
     │           ↓ Regridded meteorology at 1km x 1km
-    │       2.3.4_UrbClim1km_2_epw.ipynb
+    │       2.2.4_UrbClim1km_2_epw.ipynb
     │           ↓ EPW-format meteorological input per grid cell
     │
     └─ All above ────────► SOLWEIG.py + SOLWEIG.sh  (HPC)
                                ↓ Tmrt rasters -> UTCI rasters (2m, 730 time steps)
-                           2.3.6_UTCI_postprocessing.ipynb
+                           2.2.6_UTCI_postprocessing.ipynb
                                ↓ Merged city-wide UTCI, heat/cold degree hours, clipped outputs
-                           2.6_Avoidance_Routing.ipynb
-                               ↓ Segment-level exposure aggregation + web routing application
 ```
 
 ---
 
 ## Notebook Descriptions
 
-### `2.2.1_AppA_DSM_object_removing.ipynb` — DSM Vehicle Removal
+### `2.1.1_AppA_DSM_object_removing.ipynb` — DSM Vehicle Removal
 Implements **Appendix A** of the paper. Removes misclassified parked vehicles from the vegetation layer of the Digital Surface Model using a circularity-based filtering approach. Steps include clipping building footprints from the DSM-DTM difference raster, extracting vegetation profiles by height thresholds (0.4-2 m for vehicle-height objects), computing the circularity ratio for each object across spatial tiles (to manage memory), and masking out those with circularity between 0.22 and 0.66 on impermeable surfaces.
 
 **Key inputs:** `DSM-DTM_50cm.tif`, `UrbISBuildings_04000.gpkg`, `Impermeables_clipped.tif`
@@ -126,7 +123,7 @@ Implements **Appendix A** of the paper. Removes misclassified parked vehicles fr
 
 ---
 
-### `2.2.2_AppB_LULC_preprocessing.ipynb` — LULC Dataset Generation
+### `2.1.2_AppB_LULC_preprocessing.ipynb` — LULC Dataset Generation
 Implements **Appendix B** of the paper. Generates a 7-category LULC map compatible with the UMEP toolbox (Paved, Buildings, Evergreen trees, Deciduous trees, Grass, Bare soil, Water) by fusing multiple data sources. Two base LULC products are supported: ESA WorldCover 10 m and CORINE Land Cover (CLC) 2012. A pixel-based weighted voting algorithm integrates building DSM, vegetation DSM, and impervious surface data to resolve conflicts and produce the final classification, saved as NetCDF on the 1 km x 1 km ETRS89-LAEA grid.
 
 **Key inputs:** `WorldCover_LULC_Brussels.tif` or CLC 2012, building/vegetation DSMs, impervious surface raster
@@ -134,7 +131,7 @@ Implements **Appendix B** of the paper. Generates a 7-category LULC map compatib
 
 ---
 
-### `2.2.3_Static_dataset_2_nc.ipynb` — Static Datasets to NetCDF
+### `2.1.3_Static_dataset_2_nc.ipynb` — Static Datasets to NetCDF
 Implements **Section 2.2** static data preparation. Reads the GHS Built-up Volume (GHS-BUILT-V) multitemporal raster dataset and reprojects and aggregates values onto the 1 km x 1 km ETRS89-LAEA grid. Produces a NetCDF file with building volume estimates for multiple epochs (2005, 2010, 2015, 2020).
 
 **Key inputs:** `GHS_BUILT_V_E*_GLOBE_R2023A_4326_3ss_V1_0.tif` (multitemporal)
@@ -142,7 +139,7 @@ Implements **Section 2.2** static data preparation. Reads the GHS Built-up Volum
 
 ---
 
-### `2.3.1_Meteorological_dataset_2_nc.ipynb` — Meteorological Data to NetCDF
+### `2.2.1_Meteorological_dataset_2_nc.ipynb` — Meteorological Data to NetCDF
 Implements **Section 2.3** meteorological pre-processing. Reads raw UrbClim monthly NetCDF files (air temperature, relative humidity, wind speed) at 100 m resolution, extracts values for the BCR domain, and saves annual time series as consolidated NetCDF files. Also inspects UrbClim auxiliary masks (rural/urban mask, land/sea mask) for quality control.
 
 **Key inputs:** `tas_Brussels_UrbClim_YYYY_MM_v1.0.nc`, `russ_*`, `sfcWind_*`
@@ -150,7 +147,7 @@ Implements **Section 2.3** meteorological pre-processing. Reads raw UrbClim mont
 
 ---
 
-### `2.3.2_DSM_split_1km.ipynb` — DSM Resampling and Per-grid Clipping
+### `2.2.2_DSM_split_1km.ipynb` — DSM Resampling and Per-grid Clipping
 Implements **Section 2.3** DSM preparation for SOLWEIG. Runs in the **QGIS Python console**. Resamples the cleaned DSM layers (ground, ground+building, vegetation) from 0.5 m to the target SOLWEIG resolution (e.g. 2 m) using GDAL with average resampling. Prepares 1 km x 1 km city mask vector files from the ETRS89 EEA reference grid, then clips the resampled DSM layers to each grid cell to produce the per-grid inputs required by SOLWEIG.
 
 **Key inputs:** `DSM_50cm_ground.tif`, `DSM_50cm_ground_building.tif`, `DSM-DTM_50cm_vegetation_without_cars.tif`, EEA ETRS89 grid shapefile
@@ -158,7 +155,7 @@ Implements **Section 2.3** DSM preparation for SOLWEIG. Runs in the **QGIS Pytho
 
 ---
 
-### `2.3.3_UrbClim_100m_2_1km.ipynb` — UrbClim Regridding (100 m -> 1 km)
+### `2.2.3_UrbClim_100m_2_1km.ipynb` — UrbClim Regridding (100 m -> 1 km)
 Implements **Section 2.3** meteorological regridding. Reads the consolidated annual UrbClim NetCDF files and regrids them from the native 100 m x 100 m UrbClim grid to the 1 km x 1 km ETRS89-LAEA grid. Handles coordinate reprojection between EPSG:4326 and EPSG:3035. Also visualises yearly average fields and verifies rural/urban mask alignment.
 
 **Key inputs:** `Air_temp_brussels_YYYY.nc`, `RH_brussels_YYYY.nc`, `Wind_brussels_YYYY.nc`
@@ -166,7 +163,7 @@ Implements **Section 2.3** meteorological regridding. Reads the consolidated ann
 
 ---
 
-### `2.3.4_UrbClim1km_2_epw.ipynb` — Meteorological Data -> EPW Format
+### `2.2.4_UrbClim1km_2_epw.ipynb` — Meteorological Data -> EPW Format
 Implements **Section 2.3** SOLWEIG input preparation. Converts regridded UrbClim meteorological data and CAMS-RAD solar radiation into the EPW (EnergyPlus Weather) text format required by SOLWEIG. Includes validation against ERA5 for temperature, relative humidity, wind speed, and dew point. Produces multiple temporal variants of the input file:
 - Full hourly EPW (all time steps)
 - Coldest/hottest day subset
@@ -197,7 +194,7 @@ Implements **Section 2.3** UTCI computation at city scale. Designed for HPC depl
 
 ---
 
-### `2.3.6_UTCI_postprocessing.ipynb` — UTCI Post-processing
+### `2.2.6_UTCI_postprocessing.ipynb` — UTCI Post-processing
 Implements **Section 2.3** post-processing steps. Converts raw per-grid UTCI outputs from SOLWEIG into city-wide stress products. Three steps:
 
 1. **Merge UTCI rasters** — mosaics all 178 per-grid `UTCI_*_clipped.tif` files into city-wide rasters using GDAL, for each of the 730 time steps.
@@ -208,19 +205,6 @@ Note: steps 2-3 require a QGIS console environment.
 
 **Key inputs:** `UTCI_*_clipped.tif` per grid cell, BCR boundary polygon
 **Key outputs:** City-wide annual/monthly heat and cold stress rasters (`heat_stress_YYYY.tif`, `cold_stress_YYYY.tif`)
-
----
-
-### `2.6_Avoidance_Routing.ipynb` — Avoidance Route Mapping Application
-Prior to this notebook, a series of QGIS operations are required but not included in this repository. These include creating buffer zones along soft mobility routes, splitting routes into segments of suitable length, and extracting raster values per segment using the Zonal Statistics function in QGIS. Implements **Section 2.6** of the paper. Builds the interactive web-based avoidance routing application with dual UTCI threshold analysis (26 °C and 32 °C). Pipeline steps:
-1. **Segment-level exposure aggregation** — reads UTCI and AQI rasters, computes mean exposure per 50 m soft mobility segment within a 7 m buffer; supports dual UTCI thresholds and timeline data collection
-2. **IDW heatmap generation** — produces smooth 10 m x 10 m exposure surfaces (heat, air pollution, greenery) via Inverse Distance Weighting with enforced common bounds
-3. **Avoidance routing** — integrates with the OpenRouteService API; avoids segments exceeding UTCI 26 °C or 32 °C or AQI 50, based on user-defined avoidance rates and SVF threshold
-4. **HTML web application** — generates a self-contained interactive map (Mapbox GL) with triple heatmap overlays (heat, air pollution, greenery), direct vs optimised route comparison with area-under-curve exposure calculation, and configurable user scenarios (heat-sensitive, respiratory-sensitive)
-
-**Key inputs:** UTCI stress rasters, AQI data, bike route network (GeoJSON), NDVI, SVF layers
-**Key outputs:** Self-contained HTML interactive map
-
 ---
 
 ## Installation
