@@ -25,7 +25,6 @@ Compared with existing tools, BREEZE (i) combines several stressors rather than 
 - Accounting for dynamic population changes which segments are prioritised — most notably for heat, where daytime population concentration doubles the share of heat exposure compared with static estimates.
 - On the hottest day of 2011, personalised routing reduced **strong heat stress (UTCI > 32 °C) by up to 20 %** for a daytime cyclist (< 1 min longer) and **air pollution stress by up to 40 %** for an evening pedestrian (~2 min longer).
 
-The framework is designed to be transferable to other cities with different data availability (see [Adapting to another city](#adapting-to-another-city)).
 
 ---
 
@@ -78,8 +77,6 @@ File names are prefixed with the paper section they implement. Appendices A–C 
 | 2.3 | AQI computation (python-aqi) | *not in this repository* |
 | 2.4 | Segmentation, zonal statistics, Spearman correlation, k-means clustering, dynamic vs static exposure | *not  in this repository* |
 | 2.5 | Avoidance route mapping application (OpenRouteService + Mapbox GL JS) | [Available here](https://yenshuohuang.github.io/#breeze) |
-
-> Note: the file `2.2.1_Meteorological _dataset_2_nc.ipynb` contains a space before `_dataset`; quote the name on the command line.
 
 ---
 
@@ -301,30 +298,6 @@ data/
 └── routes/
     └── bike_routes_BCR.geojson
 ```
-
----
-
-## Adapting to another city
-
-- **Grid.** Use the EEA ETRS89 reference grid (or an equivalent 1 km grid) to define the simulation cells.
-- **Surface models.** DSM/DTM resolution of 0.5–10 m is recommended; resolutions coarser than ~15 m do not capture street canyons well.
-- **Land cover.** Build a 7-class UMEP LULC from a global product (e.g. ESA WorldCover) and any local high-resolution layers, following `2.1.2_AppB_LULC_preprocessing.ipynb`.
-- **Meteorology.** Any of: UrbClim (100 m, European cities), ERA5 reanalysis (global, coarser), or a local station run through the Urban Weather Generator (UWG) in UMEP. The UWG route also enables near-real-time UTCI. Radiation must separate direct and diffuse components (e.g. CAMS-RAD).
-- **Air quality.** Monitoring networks or mobile measurements with interpolation, satellite products calibrated to local stations, regional air quality models, or hybrids. Outside Europe, EPA AQS (North America) or CAMS (global) are alternatives to EXPANSE. Use the AQI breakpoints of the relevant standard (EU or US).
-- **Population.** Day/night population is used to weight exposure; where such data are unavailable, a static census population can be used, at the cost of missing diurnal hotspots.
-- **Thresholds.** The segment length (50 m) comes from typical walking/cycling speeds; the 7 m buffer and the filtering cut-offs were calibrated on the Brussels network and should be checked locally.
-
----
-
-## Limitations
-
-As discussed in the paper:
-- The EXPANSE air pollution data are monthly, so AQI has no intraday variation; day/night differences in AQI exposure come from population only.
-- 8-h averaged meteorology is suitable for planning but coarse for real-time navigation; real-time routing (e.g. with IRCEL-CELINE and UWG) is proposed but not implemented.
-- Routing ignores traffic-signal waiting time and indoor or covered passages (e.g. arcades).
-- Wind is assumed stable and uniform; URock could resolve micro-scale wind but does not yet support city-scale terrain.
-- Population data do not identify vulnerable groups, and synergistic effects between stressors are not modelled.
-
 ---
 
 ## License
