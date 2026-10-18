@@ -75,9 +75,9 @@ File names are prefixed with the paper section they implement. Appendices A–C 
 | 2.2 / Suppl. Appendix C | Meteorological forcing files for SOLWEIG and comparison with reference data | `2.2.4_UrbClim1km_2_epw.ipynb` |
 | 2.2 / 2.6 | SOLWEIG T<sub>mrt</sub> → UTCI on HPC | `SOLWEIG.py`, `SOLWEIG.sh` |
 | 2.2 | UTCI mosaicking, heat/cold degree hours, clipping | `2.2.6_UTCI_postprocessing.ipynb` |
-| 2.3 | AQI computation (python-aqi) | *not yet in this repository* |
-| 2.4 | Segmentation, zonal statistics, Spearman correlation, k-means clustering, dynamic vs static exposure | *not yet in this repository* |
-| 2.5 | Avoidance route mapping application (OpenRouteService + Mapbox GL JS) | *not yet in this repository* |
+| 2.3 | AQI computation (python-aqi) | *not in this repository* |
+| 2.4 | Segmentation, zonal statistics, Spearman correlation, k-means clustering, dynamic vs static exposure | *not  in this repository* |
+| 2.5 | Avoidance route mapping application (OpenRouteService + Mapbox GL JS) | [Available here](https://yenshuohuang.github.io/#breeze) |
 
 > Note: the file `2.2.1_Meteorological _dataset_2_nc.ipynb` contains a space before `_dataset`; quote the name on the command line.
 
