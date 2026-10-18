@@ -9,25 +9,6 @@ Code accompanying the paper *BREEZE: Bioclimatic Route Evaluation for Environmen
 
 ---
 
-## Overview
-
-Exposure to heat and air pollution is rising in cities, and soft mobility users (pedestrians, cyclists, scooter riders) are particularly exposed. BREEZE is a multi-dimensional exposure assessment framework for urban soft mobility routes that integrates environmental stressor modelling, dynamic population weighting and a citizen-oriented navigation tool. It addresses two complementary objectives:
-
-1. **City scale, annual time span — urban planning.** Every soft mobility route is split into 50 m segments, characterised by heat and cold stress (UTCI), air quality (AQI from NO₂, PM₂.₅, PM₁₀, O₃), greenery (NDVI, SVF<sub>Veg</sub>) and urban form (SVF<sub>built</sub>, SVF<sub>all</sub>, building volume), then clustered with k-means. Priority clusters are ranked by *dynamic* exposure, which weights stressors by daytime (8–16 h) and nighttime (16–24 h) population instead of a static census population.
-2. **Individual scale, daily time span — personalised navigation.** A web application routes users around segments exceeding stress thresholds (UTCI > 26 °C for heat, AQI > 50 for air quality), with a user-chosen avoidance rate for each stressor.
-
-Compared with existing tools, BREEZE (i) combines several stressors rather than a single one, (ii) works at street-segment resolution rather than city- or neighbourhood-wide averages, and (iii) lets users weight stressors according to their own sensitivities.
-
-### Key results — Brussels-Capital Region (BCR), 2011
-
-- UTCI simulated at **2 m resolution** for **178 grid cells of 1 km × 1 km** and **730 time steps** (365 days × day/night 8-h windows) on an HPC cluster.
-- **9 route segment clusters** identified; three were selected as priority intervention targets: *Heat-Stressed* (Cluster 5, open streets and plazas), *Air-Polluted* (Cluster 4, main boulevards near the centre) and *Cold-Stressed* (Cluster 1, green periphery).
-- Accounting for dynamic population changes which segments are prioritised — most notably for heat, where daytime population concentration doubles the share of heat exposure compared with static estimates.
-- On the hottest day of 2011, personalised routing reduced **strong heat stress (UTCI > 32 °C) by up to 20 %** for a daytime cyclist (< 1 min longer) and **air pollution stress by up to 40 %** for an evening pedestrian (~2 min longer).
-
-
----
-
 ## Citation
 
 If you use BREEZE in your research, please cite:
@@ -135,15 +116,6 @@ The pipeline currently in the repository produces the UTCI-based heat and cold s
                            2.2.6_UTCI_postprocessing.ipynb
                                ↓ city-wide UTCI, heat (> 26 °C) and cold (< 9 °C) degree hours
 ```
-
-Downstream steps described in the paper (Sections 2.3–2.5):
-
-1. **AQI (2.3).** Convert monthly NO₂, PM₂.₅, PM₁₀ and O₃ concentrations (EXPANSE, 100 m) to sub-indices and take the maximum as the overall AQI.
-2. **Segments (2.4.1).** Split the soft mobility network into 50 m segments (6–36 s traversal at walking/cycling speeds), buffer by 7 m on each side, and discard segments with > 35 % building coverage or < 10 m² area.
-3. **Indicators, correlation and clustering (2.4.2).** Extract each indicator per buffered segment with QGIS *Zonal statistics*; drop collinear indicators (|ρ| > 0.8, Spearman); cluster with k-means, choosing *k* by silhouette score.
-4. **Dynamic exposure (2.4.3).** For each stressor, combine day and night stressor values with day and night population (Batista e Silva et al., 2020) using Δt = 8 h, and compare with a static estimate based on annual nighttime population. Heat and cold stress are degree hours outside the UTCI "no thermal stress" band (9–26 °C); air pollution is AQI above 50.
-5. **Avoidance routing (2.5).** Flag segments above UTCI 26 °C or AQI 50 per period; the user's avoidance rate sets the share of flagged segments excluded from routing (OpenRouteService); exposure heatmaps are shown at 10 m via IDW on Mapbox GL JS. The framework *excludes* segments rather than weighting them, so routes do not pass through above-threshold segments.
-
 ---
 
 ## Notebook descriptions
@@ -265,8 +237,6 @@ Input data for the BCR case study (year 2011) are **not included** because of si
 | GHS-BUILT-V R2023A | 100 m | 2010 | [Pesaresi & Politis 2023](https://doi.org/10.1080/17538947.2024.2390454) |
 | EEA reference grid (ETRS89-LAEA) | 1 km | — | [EEA reference grids](https://www.eea.europa.eu/data-and-maps/data/eea-reference-grids-2) |
 | CORINE Land Cover 2012 (optional) | 100 m | 2012 | [Copernicus Land Service](https://land.copernicus.eu/pan-european/corine-land-cover) |
-
-Some morphology layers (DSM, DTM, buildings) post-date 2011. The paper discusses this mismatch as a limitation; it mainly affects segments where the built form changed after 2011.
 
 Expected directory layout:
 
