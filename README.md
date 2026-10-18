@@ -5,37 +5,50 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![QGIS 3.28](https://img.shields.io/badge/QGIS-3.28-green.svg)](https://qgis.org/)
 
+Code accompanying the paper *BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE* (Huang, Manoli, Bou-Zeid & Llaguno-Munitxa, *Computers, Environment and Urban Systems*, in press).
 
 ---
 
 ## Overview
 
-BREEZE is a comprehensive framework that evaluates environmental hazard exposure (heat stress, cold stress, air pollution, and greenery) along urban soft mobility networks (pedestrian paths, cycling lanes). It serves two complementary purposes:
+Exposure to heat and air pollution is rising in cities, and soft mobility users (pedestrians, cyclists, scooter riders) are particularly exposed. BREEZE is a multi-dimensional exposure assessment framework for urban soft mobility routes that integrates environmental stressor modelling, dynamic population weighting and a citizen-oriented navigation tool. It addresses two complementary objectives:
 
-1. **City-scale urban planning** — identifying high-exposure hotspots and priority intervention zones using dynamic population weighting.
-2. **Citizen-oriented navigation** — personalised route optimisation that minimises individual environmental exposure based on user-declared health sensitivities.
+1. **City scale, annual time span — urban planning.** Every soft mobility route is split into 50 m segments, characterised by heat and cold stress (UTCI), air quality (AQI from NO₂, PM₂.₅, PM₁₀, O₃), greenery (NDVI, SVF<sub>Veg</sub>) and urban form (SVF<sub>built</sub>, SVF<sub>all</sub>, building volume), then clustered with k-means. Priority clusters are ranked by *dynamic* exposure, which weights stressors by daytime (8–16 h) and nighttime (16–24 h) population instead of a static census population.
+2. **Individual scale, daily time span — personalised navigation.** A web application routes users around segments exceeding stress thresholds (UTCI > 26 °C for heat, AQI > 50 for air quality), with a user-chosen avoidance rate for each stressor.
 
-The framework is demonstrated on the **Brussels-Capital Region (BCR)** as a case study and is designed to be transferable to other urban contexts.
+Compared with existing tools, BREEZE (i) combines several stressors rather than a single one, (ii) works at street-segment resolution rather than city- or neighbourhood-wide averages, and (iii) lets users weight stressors according to their own sensitivities.
+
+### Key results — Brussels-Capital Region (BCR), 2011
+
+- UTCI simulated at **2 m resolution** for **178 grid cells of 1 km × 1 km** and **730 time steps** (365 days × day/night 8-h windows) on an HPC cluster.
+- **9 route segment clusters** identified; three were selected as priority intervention targets: *Heat-Stressed* (Cluster 5, open streets and plazas), *Air-Polluted* (Cluster 4, main boulevards near the centre) and *Cold-Stressed* (Cluster 1, green periphery).
+- Accounting for dynamic population changes which segments are prioritised — most notably for heat, where daytime population concentration doubles the share of heat exposure compared with static estimates.
+- On the hottest day of 2011, personalised routing reduced **strong heat stress (UTCI > 32 °C) by up to 20 %** for a daytime cyclist (< 1 min longer) and **air pollution stress by up to 40 %** for an evening pedestrian (~2 min longer).
+
+The framework is designed to be transferable to other cities with different data availability (see [Adapting to another city](#adapting-to-another-city)).
 
 ---
+
 ## Citation
 
-If you use BREEZE in your research, please cite the associated paper (citation to be updated upon publication):
+If you use BREEZE in your research, please cite:
 
 ```bibtex
-@article{breeze2025,
+@article{huang2026breeze,
   title   = {BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
   author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
   journal = {Computers, Environment and Urban Systems},
-  year    = {Under Review}
+  year    = {2026},
+  note    = {In press}
 }
 ```
 
-Related work from the same research group:
+The dynamic exposure method builds on:
+
 ```bibtex
 @article{huang2025dynamic,
   title   = {Towards Dynamic Urban Environmental Exposure Assessments: A Case Study of the Brussels Capital Region},
-  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Llaguno-Munitxa, Maider},
+  author  = {Huang, Yen-Shuo and Llaguno-Munitxa, Maider and Manoli, Gabriele},
   journal = {Journal of Physics: Conference Series},
   volume  = {3140},
   number  = {12},
@@ -47,165 +60,155 @@ Related work from the same research group:
 
 ---
 
-## Repository Structure
+## Paper ↔ code map
+
+File names are prefixed with the paper section they implement. Appendices A–C are in the paper's Supplementary material.
+
+| Paper section | Content | Code |
+|---|---|---|
+| 2.1 / Suppl. Appendix A | DSM/DTM pre-processing, removal of non-building objects (vehicles) | `2.1.1_AppA_DSM_object_removing.ipynb` |
+| 2.1 / Suppl. Appendix B | 7-class UMEP LULC by multi-source voting | `2.1.2_AppB_LULC_preprocessing.ipynb` |
+| 2.1 | Building volume (GHS-BUILT-V) on the 1 km grid | `2.1.3_Static_dataset_2_nc.ipynb` |
+| 2.2 | UrbClim meteorology → NetCDF | `2.2.1_Meteorological _dataset_2_nc.ipynb` |
+| 2.2 | DSM resampling and per-grid clipping | `2.2.2_DSM_split_1km.ipynb` |
+| 2.2 / 2.6 | UrbClim regridding 100 m → 1 km | `2.2.3_UrbClim_100m_2_1km.ipynb` |
+| 2.2 / Suppl. Appendix C | Meteorological forcing files for SOLWEIG and comparison with reference data | `2.2.4_UrbClim1km_2_epw.ipynb` |
+| 2.2 / 2.6 | SOLWEIG T<sub>mrt</sub> → UTCI on HPC | `SOLWEIG.py`, `SOLWEIG.sh` |
+| 2.2 | UTCI mosaicking, heat/cold degree hours, clipping | `2.2.6_UTCI_postprocessing.ipynb` |
+| 2.3 | AQI computation (python-aqi) | *not yet in this repository* |
+| 2.4 | Segmentation, zonal statistics, Spearman correlation, k-means clustering, dynamic vs static exposure | *not yet in this repository* |
+| 2.5 | Avoidance route mapping application (OpenRouteService + Mapbox GL JS) | *not yet in this repository* |
+
+> Note: the file `2.2.1_Meteorological _dataset_2_nc.ipynb` contains a space before `_dataset`; quote the name on the command line.
+
+---
+
+## Repository structure
 
 ```
 BREEZE/
-│
-├── 2.1.1_AppA_DSM_object_removing.ipynb    # Section 2.1 / Appendix A: Vehicle removal from DSM
-├── 2.1.2_AppB_LULC_preprocessing.ipynb     # Section 2.1 / Appendix B: Multi-source LULC generation
-├── 2.1.3_Static_dataset_2_nc.ipynb         # Section 2.1: Static datasets (building volume) to NetCDF
-├── 2.2.1_Meteorological_dataset_2_nc.ipynb # Section 2.2: UrbClim meteorological data to NetCDF
-├── 2.2.2_DSM_split_1km.ipynb               # Section 2.2: DSM resampling & per-grid clipping (QGIS)
-├── 2.2.3_UrbClim_100m_2_1km.ipynb          # Section 2.2: UrbClim regridding (100m -> 1km)
-├── 2.2.4_UrbClim1km_2_epw.ipynb            # Section 2.2: UrbClim data -> EPW format for SOLWEIG
-├── SOLWEIG.py                               # Section 2.2: HPC batch SOLWEIG runner + UTCI computation
-├── SOLWEIG.sh                               # SLURM job array script for HPC deployment
-├── 2.2.6_UTCI_postprocessing.ipynb         # Section 2.2: UTCI merging, stress accumulation & clipping
-│
-├── data/                                    # (Not included — see Data section below)
-│   ├── DSM/                                # Digital Surface/Terrain Models per 1km grid
-│   ├── meteorology/                        # UrbClim NetCDF files & EPW outputs
-│   ├── LULC/                               # Land Use/Land Cover datasets
-│   └── 3D_city/                            # Building volume and impervious surface datasets
-│
+├── 2.1.1_AppA_DSM_object_removing.ipynb     # 2.1 / Appendix A — vehicle removal from DSM
+├── 2.1.2_AppB_LULC_preprocessing.ipynb      # 2.1 / Appendix B — multi-source LULC for UMEP
+├── 2.1.3_Static_dataset_2_nc.ipynb          # 2.1 — building volume to NetCDF
+├── 2.2.1_Meteorological _dataset_2_nc.ipynb # 2.2 — UrbClim meteorology to NetCDF
+├── 2.2.2_DSM_split_1km.ipynb                # 2.2 — DSM resampling & per-grid clipping (QGIS)
+├── 2.2.3_UrbClim_100m_2_1km.ipynb           # 2.2 — UrbClim regridding (100 m → 1 km)
+├── 2.2.4_UrbClim1km_2_epw.ipynb             # 2.2 — UrbClim → EPW / SOLWEIG forcing
+├── SOLWEIG.py                               # 2.2 — HPC SOLWEIG runner + UTCI computation
+├── SOLWEIG.sh                               # 2.2 — SLURM job array (one task per 1 km cell)
+├── 2.2.6_UTCI_postprocessing.ipynb          # 2.2 — merging, degree hours, clipping
+├── BREEZE_release_description.md
+├── LICENSE
 └── README.md
 ```
 
-The notebook numbering follows the section and appendix structure of the paper: the first digit refers to the paper section (2.2, 2.3, 2.6) and the second digit indicates the sequential step within that section.
+Input data are not distributed (see [Data](#data)).
 
 ---
 
 ## Workflow
 
-The full pipeline proceeds in the following order:
+The pipeline currently in the repository produces the UTCI-based heat and cold stress layers (Sections 2.1–2.2):
 
 ```
-[Raw Data]
+[Raw data]
     │
-    ├─ DSM/DTM (0.5m)
+    ├─ DSM / DTM (0.5 m)
     │   ├─► 2.1.1_AppA_DSM_object_removing.ipynb
-    │   │       ↓ Clean vegetation DSM (vehicle removal, circularity filter)
+    │   │       ↓ clean vegetation DSM (vehicles removed by circularity filter)
     │   └─► 2.2.2_DSM_split_1km.ipynb  (QGIS)
-    │           ↓ Resampled DSMs (2m), per-grid clipped rasters
+    │           ↓ resampled DSMs (2 m), clipped per 1 km cell
     │
-    ├─ ESA WorldCover + DSMs + Impervious surfaces
+    ├─ ESA WorldCover + building/vegetation DSMs + impervious surfaces
     │   └─► 2.1.2_AppB_LULC_preprocessing.ipynb
-    │           ↓ 7-class UMEP-compatible LULC (10m)
+    │           ↓ 7-class UMEP LULC
     │
-    ├─ GHS Built-up Volume
+    ├─ GHS-BUILT-V
     │   └─► 2.1.3_Static_dataset_2_nc.ipynb
-    │           ↓ Building volume NetCDF per 1km grid
+    │           ↓ building volume per 1 km cell
     │
-    ├─ UrbClim NetCDF (100m)
-    │   ├─► 2.2.1_Meteorological_dataset_2_nc.ipynb
-    │   │       ↓ Cleaned annual meteorological NetCDF files
-    │   └─► 2.2.3_UrbClim_100m_2_1km.ipynb
-    │           ↓ Regridded meteorology at 1km x 1km
-    │       2.2.4_UrbClim1km_2_epw.ipynb
-    │           ↓ EPW-format meteorological input per grid cell
+    ├─ UrbClim (100 m, hourly) + CAMS-RAD
+    │   ├─► 2.2.1_Meteorological _dataset_2_nc.ipynb
+    │   ├─► 2.2.3_UrbClim_100m_2_1km.ipynb
+    │   └─► 2.2.4_UrbClim1km_2_epw.ipynb
+    │           ↓ SOLWEIG forcing per 1 km cell (incl. 8-h day/night windows)
     │
-    └─ All above ────────► SOLWEIG.py + SOLWEIG.sh  (HPC)
-                               ↓ Tmrt rasters -> UTCI rasters (2m, 730 time steps)
+    └─ all of the above ──► SOLWEIG.py + SOLWEIG.sh  (HPC)
+                               ↓ Tmrt → UTCI rasters (2 m, 730 time steps)
                            2.2.6_UTCI_postprocessing.ipynb
-                               ↓ Merged city-wide UTCI, heat/cold degree hours, clipped outputs
+                               ↓ city-wide UTCI, heat (> 26 °C) and cold (< 9 °C) degree hours
 ```
 
----
+Downstream steps described in the paper (Sections 2.3–2.5):
 
-## Notebook Descriptions
-
-### `2.1.1_AppA_DSM_object_removing.ipynb` — DSM Vehicle Removal
-Implements **Appendix A** of the paper. Removes misclassified parked vehicles from the vegetation layer of the Digital Surface Model using a circularity-based filtering approach. Steps include clipping building footprints from the DSM-DTM difference raster, extracting vegetation profiles by height thresholds (0.4-2 m for vehicle-height objects), computing the circularity ratio for each object across spatial tiles (to manage memory), and masking out those with circularity between 0.22 and 0.66 on impermeable surfaces.
-
-**Key inputs:** `DSM-DTM_50cm.tif`, `UrbISBuildings_04000.gpkg`, `Impermeables_clipped.tif`
-**Key outputs:** `DSM-DTM_50cm_vegetation_without_cars.tif`, `Circularity_brussels.tif`
+1. **AQI (2.3).** Convert monthly NO₂, PM₂.₅, PM₁₀ and O₃ concentrations (EXPANSE, 100 m) to sub-indices and take the maximum as the overall AQI.
+2. **Segments (2.4.1).** Split the soft mobility network into 50 m segments (6–36 s traversal at walking/cycling speeds), buffer by 7 m on each side, and discard segments with > 35 % building coverage or < 10 m² area.
+3. **Indicators, correlation and clustering (2.4.2).** Extract each indicator per buffered segment with QGIS *Zonal statistics*; drop collinear indicators (|ρ| > 0.8, Spearman); cluster with k-means, choosing *k* by silhouette score.
+4. **Dynamic exposure (2.4.3).** For each stressor, combine day and night stressor values with day and night population (Batista e Silva et al., 2020) using Δt = 8 h, and compare with a static estimate based on annual nighttime population. Heat and cold stress are degree hours outside the UTCI "no thermal stress" band (9–26 °C); air pollution is AQI above 50.
+5. **Avoidance routing (2.5).** Flag segments above UTCI 26 °C or AQI 50 per period; the user's avoidance rate sets the share of flagged segments excluded from routing (OpenRouteService); exposure heatmaps are shown at 10 m via IDW on Mapbox GL JS. The framework *excludes* segments rather than weighting them, so routes do not pass through above-threshold segments.
 
 ---
 
-### `2.1.2_AppB_LULC_preprocessing.ipynb` — LULC Dataset Generation
-Implements **Appendix B** of the paper. Generates a 7-category LULC map compatible with the UMEP toolbox (Paved, Buildings, Evergreen trees, Deciduous trees, Grass, Bare soil, Water) by fusing multiple data sources. Two base LULC products are supported: ESA WorldCover 10 m and CORINE Land Cover (CLC) 2012. A pixel-based weighted voting algorithm integrates building DSM, vegetation DSM, and impervious surface data to resolve conflicts and produce the final classification, saved as NetCDF on the 1 km x 1 km ETRS89-LAEA grid.
+## Notebook descriptions
 
-**Key inputs:** `WorldCover_LULC_Brussels.tif` or CLC 2012, building/vegetation DSMs, impervious surface raster
-**Key outputs:** `WorldCover_Brussels_11bands.nc`, `CLC_2012_Brussels_14bands.nc`, `LULC_UMEP_*.tif` per grid
+### `2.1.1_AppA_DSM_object_removing.ipynb` — DSM object removal (Section 2.1, Suppl. Appendix A)
+Removes non-building objects, mainly parked vehicles, that are misread as vegetation in the DSM. Building footprints are clipped from the DSM − DTM raster, objects between 0.4 and 2 m in height are extracted, and the circularity of each object is computed tile by tile to keep memory use manageable. Objects with circularity between 0.22 and 0.66 on impervious surfaces are masked out. Repeat until the vegetation profile is clean.
 
----
+**Inputs:** `DSM-DTM_50cm.tif`, `UrbISBuildings_04000.gpkg`, `Impermeables_clipped.tif`
+**Outputs:** `DSM-DTM_50cm_vegetation_without_cars.tif`, `Circularity_brussels.tif`
 
-### `2.1.3_Static_dataset_2_nc.ipynb` — Static Datasets to NetCDF
-Implements **Section 2.2** static data preparation. Reads the GHS Built-up Volume (GHS-BUILT-V) multitemporal raster dataset and reprojects and aggregates values onto the 1 km x 1 km ETRS89-LAEA grid. Produces a NetCDF file with building volume estimates for multiple epochs (2005, 2010, 2015, 2020).
+### `2.1.2_AppB_LULC_preprocessing.ipynb` — LULC generation (Section 2.1, Suppl. Appendix B)
+Produces the seven UMEP land cover classes (Paved, Buildings, Evergreen trees, Deciduous trees, Grass, Bare soil, Water) by combining a global product with local high-resolution layers (building DSM, vegetation DSM, impervious surfaces) through a pixel-based voting algorithm. ESA WorldCover 10 m is the product used in the paper; a CORINE Land Cover 2012 variant is also included.
 
-**Key inputs:** `GHS_BUILT_V_E*_GLOBE_R2023A_4326_3ss_V1_0.tif` (multitemporal)
-**Key outputs:** `Building_volume_brussels.nc`
+**Inputs:** `WorldCover_LULC_Brussels.tif` (or CLC 2012), building/vegetation DSMs, impervious surface raster
+**Outputs:** `WorldCover_Brussels_11bands.nc`, `CLC_2012_Brussels_14bands.nc`, `LULC_UMEP_*.tif` per grid cell
 
----
+### `2.1.3_Static_dataset_2_nc.ipynb` — Building volume (Section 2.1)
+Reprojects and aggregates the multitemporal GHS-BUILT-V R2023A rasters onto the 1 km ETRS89-LAEA grid (epochs 2005–2020; 2010 is used for the 2011 case study).
 
-### `2.2.1_Meteorological_dataset_2_nc.ipynb` — Meteorological Data to NetCDF
-Implements **Section 2.3** meteorological pre-processing. Reads raw UrbClim monthly NetCDF files (air temperature, relative humidity, wind speed) at 100 m resolution, extracts values for the BCR domain, and saves annual time series as consolidated NetCDF files. Also inspects UrbClim auxiliary masks (rural/urban mask, land/sea mask) for quality control.
+**Inputs:** `GHS_BUILT_V_E*_GLOBE_R2023A_4326_3ss_V1_0.tif`
+**Outputs:** `Building_volume_brussels.nc`
 
-**Key inputs:** `tas_Brussels_UrbClim_YYYY_MM_v1.0.nc`, `russ_*`, `sfcWind_*`
-**Key outputs:** `Air_temp_brussels_YYYY.nc`, `RH_brussels_YYYY.nc`, `Wind_brussels_YYYY.nc`
+### `2.2.1_Meteorological _dataset_2_nc.ipynb` — Meteorology to NetCDF (Section 2.2)
+Reads monthly UrbClim files (air temperature, relative humidity, wind speed, 100 m, hourly), extracts the BCR domain and writes annual NetCDF time series. Also inspects the UrbClim rural/urban and land/sea masks.
 
----
+**Inputs:** `tas_Brussels_UrbClim_YYYY_MM_v1.0.nc`, `russ_*`, `sfcWind_*`
+**Outputs:** `Air_temp_brussels_YYYY.nc`, `RH_brussels_YYYY.nc`, `Wind_brussels_YYYY.nc`
 
-### `2.2.2_DSM_split_1km.ipynb` — DSM Resampling and Per-grid Clipping
-Implements **Section 2.3** DSM preparation for SOLWEIG. Runs in the **QGIS Python console**. Resamples the cleaned DSM layers (ground, ground+building, vegetation) from 0.5 m to the target SOLWEIG resolution (e.g. 2 m) using GDAL with average resampling. Prepares 1 km x 1 km city mask vector files from the ETRS89 EEA reference grid, then clips the resampled DSM layers to each grid cell to produce the per-grid inputs required by SOLWEIG.
+### `2.2.2_DSM_split_1km.ipynb` — DSM resampling and clipping (Section 2.2)
+Run in the **QGIS Python console**. Resamples the ground, ground + building and vegetation DSMs from 0.5 m to the SOLWEIG resolution (2 m in the paper) and clips them to each 1 km cell of the EEA reference grid (`CELLCODE` of the form `1kmExxxxNxxxx`). The paper notes that ~15 m is the coarsest resolution that still captures street-canyon effects; resolution trades accuracy against computing cost.
 
-**Key inputs:** `DSM_50cm_ground.tif`, `DSM_50cm_ground_building.tif`, `DSM-DTM_50cm_vegetation_without_cars.tif`, EEA ETRS89 grid shapefile
-**Key outputs:** `Ground_<CELLCODE>.tif`, `Ground_Building_<CELLCODE>.tif`, `Vegetation_<CELLCODE>.tif` per 1 km grid; `CELLCODE_<CELLCODE>.gpkg` mask vectors
+**Inputs:** `DSM_50cm_ground.tif`, `DSM_50cm_ground_building.tif`, `DSM-DTM_50cm_vegetation_without_cars.tif`, EEA ETRS89 grid
+**Outputs:** `Ground_<CELLCODE>.tif`, `Ground_Building_<CELLCODE>.tif`, `Vegetation_<CELLCODE>.tif`, `CELLCODE_<CELLCODE>.gpkg`
 
----
+### `2.2.3_UrbClim_100m_2_1km.ipynb` — UrbClim regridding (Section 2.2 / 2.6)
+Upscales UrbClim from 100 m to the 1 km ETRS89-LAEA grid (EPSG:4326 → EPSG:3035) for computational efficiency, as described in Section 2.6, and plots annual mean fields to check alignment with the masks.
 
-### `2.2.3_UrbClim_100m_2_1km.ipynb` — UrbClim Regridding (100 m -> 1 km)
-Implements **Section 2.3** meteorological regridding. Reads the consolidated annual UrbClim NetCDF files and regrids them from the native 100 m x 100 m UrbClim grid to the 1 km x 1 km ETRS89-LAEA grid. Handles coordinate reprojection between EPSG:4326 and EPSG:3035. Also visualises yearly average fields and verifies rural/urban mask alignment.
+**Inputs:** `Air_temp_brussels_YYYY.nc`, `RH_brussels_YYYY.nc`, `Wind_brussels_YYYY.nc`
+**Outputs:** regridded NetCDF files at 1 km
 
-**Key inputs:** `Air_temp_brussels_YYYY.nc`, `RH_brussels_YYYY.nc`, `Wind_brussels_YYYY.nc`
-**Key outputs:** Regridded per-variable NetCDF files at 1 km resolution
+### `2.2.4_UrbClim1km_2_epw.ipynb` — SOLWEIG forcing (Section 2.2, Suppl. Appendix C)
+Combines the 1 km UrbClim meteorology with CAMS-RAD radiation (GHI, DNI, DHI) into EPW / SOLWEIG text files per grid cell, and compares the meteorology against reference data. Several temporal variants are produced:
+- full hourly series;
+- coldest and hottest day (the hottest day is used for the routing demonstration);
+- **8-h day (8–16 h) and night (16–24 h) averages** — the 730 time steps used in the main analysis;
+- monthly 8-h averages and an alternative day/night window.
 
----
+**Outputs:** `meteo_<CELLCODE>_*.txt` per grid cell
 
-### `2.2.4_UrbClim1km_2_epw.ipynb` — Meteorological Data -> EPW Format
-Implements **Section 2.3** SOLWEIG input preparation. Converts regridded UrbClim meteorological data and CAMS-RAD solar radiation into the EPW (EnergyPlus Weather) text format required by SOLWEIG. Includes validation against ERA5 for temperature, relative humidity, wind speed, and dew point. Produces multiple temporal variants of the input file:
-- Full hourly EPW (all time steps)
-- Coldest/hottest day subset
-- 8-hour day/night averaged windows (daytime 8-16h, nighttime 16-24h) — used for the main analysis
-- Monthly 8-hour averaged files
+### `SOLWEIG.py` + `SOLWEIG.sh` — SOLWEIG and UTCI on HPC (Section 2.2 / 2.6)
+`SOLWEIG.py` starts QGIS/UMEP headlessly, runs SOLWEIG for one 1 km cell to obtain T<sub>mrt</sub> at 2 m, clips results to the cell with GDAL, and converts T<sub>mrt</sub> to UTCI with `pythermalcomfort` using the matching air temperature, humidity and wind (wind floored at 0.5 m/s).
 
-**Key inputs:** Regridded UrbClim NetCDF, CAMS-RAD solar radiation, ERA5 EPW for validation
-**Key outputs:** `meteo_<CELLCODE>_DoY80_264_hourly.txt` and variant files per 1 km grid cell
+`SOLWEIG.sh` submits a SLURM job array of 178 tasks (`0-177`, one per cell, max 20 concurrent, 7 GB each) and loads QGIS 3.28.1, pythermalcomfort and rasterio. Cluster-specific settings (partition, excluded nodes, module paths) must be adapted to your HPC.
 
----
+**Outputs:** `UTCI_<timestep>_clipped.tif` per grid cell
 
-### `SOLWEIG.py` + `SOLWEIG.sh` — HPC SOLWEIG Runner & UTCI Computation
-Implements **Section 2.3** UTCI computation at city scale. Designed for HPC deployment via SLURM job arrays.
+### `2.2.6_UTCI_postprocessing.ipynb` — UTCI post-processing (Section 2.2)
+1. Mosaic the 178 per-cell rasters into city-wide UTCI for each of the 730 time steps.
+2. Accumulate monthly and annual **heat stress** (degree hours above UTCI 26 °C) and **cold stress** (degree hours below UTCI 9 °C) per pixel.
+3. Clip to the BCR boundary (QGIS console required for steps 2–3).
 
-`SOLWEIG.py`:
-- Initialises QGIS/UMEP headlessly on the compute node
-- Runs the SOLWEIG model to produce Tmrt rasters at 2 m resolution for 730 time steps (365 days x 2 periods)
-- Clips outputs to each 1 km grid boundary using GDAL
-- Converts Tmrt rasters to UTCI using `pythermalcomfort`, reading matched meteorological conditions from the EPW file
-- Handles minimum wind speed thresholds (0.5 m/s) and cleans auxiliary files
-
-`SOLWEIG.sh`:
-- SLURM batch script submitting a job array (0-177, one per 1 km grid cell)
-- Limits to 20 simultaneous tasks; requests 7 GB RAM per task
-- Loads required modules: QGIS 3.28.1, pythermalcomfort, rasterio
-
-**Key outputs:** `UTCI_<timestep>_clipped.tif` rasters per grid cell (2 m resolution)
-
----
-
-### `2.2.6_UTCI_postprocessing.ipynb` — UTCI Post-processing
-Implements **Section 2.3** post-processing steps. Converts raw per-grid UTCI outputs from SOLWEIG into city-wide stress products. Three steps:
-
-1. **Merge UTCI rasters** — mosaics all 178 per-grid `UTCI_*_clipped.tif` files into city-wide rasters using GDAL, for each of the 730 time steps.
-2. **Compute heat and cold degree hours** — accumulates monthly and annual heat stress (UTCI > 26 °C) and cold stress (UTCI < 9 °C) as degree-hour totals per pixel.
-3. **Clip to study boundary** — clips city-wide stress rasters to the BCR administrative boundary using QGIS processing tools.
-
-Note: steps 2-3 require a QGIS console environment.
-
-**Key inputs:** `UTCI_*_clipped.tif` per grid cell, BCR boundary polygon
-
-**Key outputs:** City-wide annual/monthly heat and cold stress rasters (`heat_stress_YYYY.tif`, `cold_stress_YYYY.tif`)
+**Outputs:** `heat_stress_YYYY.tif`, `cold_stress_YYYY.tif` (annual and monthly)
 
 ---
 
@@ -214,13 +217,13 @@ Note: steps 2-3 require a QGIS console environment.
 ### Prerequisites
 
 | Component | Version | Purpose |
-|-----------|---------|---------|
-| Python | >= 3.8 | Core scripting |
-| QGIS | 3.28.1 (LTR) | UMEP plugin host; required for `2.3.2_DSM_split_1km.ipynb` and clipping steps |
-| UMEP | Latest | SOLWEIG, SVF, Wall geometry |
-| SLURM | — | HPC job scheduling (for `SOLWEIG.sh`) |
+|---|---|---|
+| Python | ≥ 3.8 | Scripting |
+| QGIS | 3.28.1 LTR | Hosts UMEP; needed for `2.2.2_DSM_split_1km.ipynb` and clipping in `2.2.6_UTCI_postprocessing.ipynb` |
+| UMEP | latest | SOLWEIG, SVF, wall height/aspect |
+| SLURM | — | HPC scheduling for `SOLWEIG.sh` |
 
-### Python Dependencies
+### Python dependencies
 
 ```bash
 pip install numpy pandas rasterio netCDF4 pythermalcomfort \
@@ -228,18 +231,13 @@ pip install numpy pandas rasterio netCDF4 pythermalcomfort \
             python-aqi statsmodels metpy geopandas opencv-python
 ```
 
-For the routing notebook additionally:
-```bash
-pip install requests shapely openrouteservice
-```
+For the routing application (Section 2.5): `pip install requests shapely openrouteservice`, plus an OpenRouteService API key and a Mapbox access token.
 
-### QGIS / UMEP Setup
+### QGIS / UMEP
 
-UMEP must be installed as a QGIS plugin. Follow the [official UMEP installation guide](https://umep-docs.readthedocs.io/en/latest/Getting_Started.html).
+Install UMEP as a QGIS plugin following the [UMEP documentation](https://umep-docs.readthedocs.io/en/latest/Getting_Started.html). Run `2.2.2_DSM_split_1km.ipynb` and the clipping cells of `2.2.6_UTCI_postprocessing.ipynb` in the QGIS Python console or a QGIS-enabled Python environment.
 
-`2.3.2_DSM_split_1km.ipynb` and the clipping cells in `2.3.6_UTCI_postprocessing.ipynb` must be run inside the **QGIS Python console** or a QGIS-enabled Python environment.
-
-For **headless HPC use**, load the appropriate modules (see `SOLWEIG.sh`) and ensure the UMEP plugin path is on `PYTHONPATH`:
+For headless HPC use, load the modules listed in `SOLWEIG.sh` and put the UMEP plugin on `PYTHONPATH`:
 
 ```bash
 export PYTHONPATH=$PYTHONPATH:/path/to/QGIS/share/qgis/python/plugins/
@@ -251,27 +249,30 @@ export QT_QPA_PLATFORM=offscreen
 
 ## Data
 
-The input data used in the BCR case study are **not included** in this repository due to size and licensing constraints. The table below lists all required datasets with links to their sources.
+Input data for the BCR case study (year 2011) are **not included** because of size and licensing. All sources are listed in Table 1 of the paper.
 
-| Dataset | Resolution | Source |
-|---------|-----------|--------|
-| Digital Surface Model (DSM) | 0.5 m | [Brussels UrbIS](https://datastore.brussels/web/data/dataset/8c2d921e-6a53-11ed-bfb5-010101010000) |
-| Digital Terrain Model (DTM) | 0.5 m | [Brussels BRIC](https://datastore.brussels/web/data/dataset/1d7bd49d-fe83-4388-af85-6f5dc8ec7909) |
-| Building parcels | Vector | [Brussels UrbIS Parcels](https://datastore.brussels/web/data/dataset/2cf42541-1813-11ef-8a81-00090ffe0001) |
-| Impervious surfaces | 1 m | [data.gov.be](https://data.gov.be/en/datasets/f8ea1c8f-44a2-4b48-9b24-083acf9c35e3) |
-| ESA WorldCover LULC | 10 m | [ESA WorldCover 2021](https://doi.org/10.5281/zenodo.7254221) |
-| CORINE Land Cover (CLC) 2012 | 100 m | [Copernicus Land Service](https://land.copernicus.eu/pan-european/corine-land-cover) |
-| GHS Built-up Volume | 100 m | [GHS-BUILT-V R2023A](https://doi.org/10.1080/17538947.2024.2390454) |
-| EEA reference grid (ETRS89) | 1 km | [EEA reference grids](https://www.eea.europa.eu/data-and-maps/data/eea-reference-grids-2) |
-| UrbClim meteorology | 100 m, hourly | [Copernicus CDS](https://doi.org/10.24381/cds.c6459d3a) |
-| CAMS-RAD solar radiation | Point | [CAMS radiation service](https://doi.org/10.1016/j.rse.2024.114472) |
-| MODIS NDVI (MOD13Q1) | 250 m, 16-day | [NASA LP DAAC](https://doi.org/10.5067/MODIS/MOD13Q1.061) |
-| Air pollution (EXPANSE) | 100 m, monthly | [Shen et al. 2022](https://doi.org/10.1016/j.envint.2022.107485) |
-| Daytime/nighttime population | 1 km | [Batista e Silva et al. 2020](https://doi.org/10.1038/s41467-020-18344-5) |
-| Bike routes | Vector | [MOBGIS Brussels](https://data.mobility.brussels/mobigis/fr/) |
-| Social deprivation (BIMD) | Statistical units | [Otavova et al. 2023](https://doi.org/10.1016/j.sste.2023.100587) |
+| Dataset | Resolution | Period used | Source |
+|---|---|---|---|
+| Day/night population density | 1 km | monthly, 2011 | [Batista e Silva et al. 2020](https://doi.org/10.1038/s41467-020-18344-5) |
+| Social deprivation (BIMD) | 724 statistical units | 2011 | [Otavova et al. 2023](https://doi.org/10.1016/j.sste.2023.100587) |
+| Bike routes (MOBIGIS) | vector | 2025 | [Brussels Mobility](https://data.mobility.brussels/mobigis/fr/) |
+| UrbClim meteorology (T, RH, wind) | 100 m, hourly | 2011 | [Copernicus CDS](https://doi.org/10.24381/cds.c6459d3a) |
+| CAMS-RAD solar radiation (GHI, DNI, DHI) | point, hourly | 2011 | [Urraca et al. 2024](https://doi.org/10.1016/j.rse.2024.114472) |
+| Air pollution (NO₂, PM₂.₅, PM₁₀, O₃; EXPANSE) | 100 m, monthly | 2011 | [Shen et al. 2022](https://doi.org/10.1016/j.envint.2022.107485) |
+| MODIS NDVI (MOD13Q1 V061) | 250 m, 16-day | 2011 | [NASA LP DAAC](https://doi.org/10.5067/MODIS/MOD13Q1.061) |
+| DTM | 0.5 m | 2021 | [Brussels Regional Informatics Center](https://datastore.brussels/web/data/dataset/1d7bd49d-fe83-4388-af85-6f5dc8ec7909) |
+| DSM (UrbIS) | 0.5 m | 2021 | [Brussels Regional Informatics Center](https://datastore.brussels/web/data/dataset/8c2d921e-6a53-11ed-bfb5-010101010000) |
+| Building parcels (UrbIS) | vector | 2024 | [Brussels Regional Informatics Center](https://datastore.brussels/web/data/dataset/2cf42541-1813-11ef-8a81-00090ffe0001) |
+| ESA WorldCover v200 | 10 m | 2021 | [Zanaga et al. 2022](https://doi.org/10.5281/zenodo.7254221) |
+| Impervious surfaces | 1 m | 2022 | [data.gov.be](https://data.gov.be/en/datasets/f8ea1c8f-44a2-4b48-9b24-083acf9c35e3) |
+| GHS-BUILT-V R2023A | 100 m | 2010 | [Pesaresi & Politis 2023](https://doi.org/10.1080/17538947.2024.2390454) |
+| EEA reference grid (ETRS89-LAEA) | 1 km | — | [EEA reference grids](https://www.eea.europa.eu/data-and-maps/data/eea-reference-grids-2) |
+| CORINE Land Cover 2012 (optional) | 100 m | 2012 | [Copernicus Land Service](https://land.copernicus.eu/pan-european/corine-land-cover) |
 
-Expected data directory structure:
+Some morphology layers (DSM, DTM, buildings) post-date 2011. The paper discusses this mismatch as a limitation; it mainly affects segments where the built form changed after 2011.
+
+Expected directory layout:
+
 ```
 data/
 ├── DSM/
@@ -300,36 +301,54 @@ data/
 └── routes/
     └── bike_routes_BCR.geojson
 ```
+
 ---
 
+## Adapting to another city
 
+- **Grid.** Use the EEA ETRS89 reference grid (or an equivalent 1 km grid) to define the simulation cells.
+- **Surface models.** DSM/DTM resolution of 0.5–10 m is recommended; resolutions coarser than ~15 m do not capture street canyons well.
+- **Land cover.** Build a 7-class UMEP LULC from a global product (e.g. ESA WorldCover) and any local high-resolution layers, following `2.1.2_AppB_LULC_preprocessing.ipynb`.
+- **Meteorology.** Any of: UrbClim (100 m, European cities), ERA5 reanalysis (global, coarser), or a local station run through the Urban Weather Generator (UWG) in UMEP. The UWG route also enables near-real-time UTCI. Radiation must separate direct and diffuse components (e.g. CAMS-RAD).
+- **Air quality.** Monitoring networks or mobile measurements with interpolation, satellite products calibrated to local stations, regional air quality models, or hybrids. Outside Europe, EPA AQS (North America) or CAMS (global) are alternatives to EXPANSE. Use the AQI breakpoints of the relevant standard (EU or US).
+- **Population.** Day/night population is used to weight exposure; where such data are unavailable, a static census population can be used, at the cost of missing diurnal hotspots.
+- **Thresholds.** The segment length (50 m) comes from typical walking/cycling speeds; the 7 m buffer and the filtering cut-offs were calibrated on the Brussels network and should be checked locally.
 
-## Contributing
+---
 
-Contributions and adaptations for other cities are welcome. Please open an issue to discuss proposed changes, or submit a pull request.
+## Limitations
 
-When adapting to a new city:
-- Obtain an ETRS89 EEA reference grid shapefile for your country from the EEA website to define the 1 km grid cells
-- Ensure your DSM/DTM spatial resolution is between 0.5-10 m for adequate SOLWEIG accuracy
-- A 7-category LULC compatible with UMEP is required (see `2.2.2_AppB_LULC_preprocessing.ipynb`)
-- Meteorological input can be substituted with ERA5 reanalysis or local station data processed through UWG if UrbClim is unavailable for your region
+As discussed in the paper:
+- The EXPANSE air pollution data are monthly, so AQI has no intraday variation; day/night differences in AQI exposure come from population only.
+- 8-h averaged meteorology is suitable for planning but coarse for real-time navigation; real-time routing (e.g. with IRCEL-CELINE and UWG) is proposed but not implemented.
+- Routing ignores traffic-signal waiting time and indoor or covered passages (e.g. arcades).
+- Wind is assumed stable and uniform; URock could resolve micro-scale wind but does not yet support city-scale terrain.
+- Population data do not identify vulnerable groups, and synergistic effects between stressors are not modelled.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE).
 
 ---
 
 ## Acknowledgements
 
-This work uses:
-- [UMEP](https://umep-docs.readthedocs.io/) — Urban Multi-scale Environmental Predictor
-- [SOLWEIG](https://doi.org/10.1007/s00484-008-0162-7) — Solar and LongWave Environmental Irradiance Geometry model
-- [pythermalcomfort](https://doi.org/10.1016/j.softx.2020.100578) — Python thermal comfort library
-- [OpenRouteService](https://openrouteservice.org/) — Open-source routing engine
-- [Copernicus Climate Change Service](https://cds.climate.copernicus.eu/) — UrbClim and ERA5 data
-- [ESA WorldCover](https://doi.org/10.5281/zenodo.7254221) — Global land cover
+This work was supported by the Fonds de la Recherche Scientifique (F.R.S.-FNRS, Belgium), Weave programme, grant T.0137.23, and the Swiss National Science Foundation (SNSF), Weave/Lead Agency scheme, grant 213995.
 
-Simulations were performed on the **Manneback HPC cluster** (Belgium).
+Simulations were run on the Manneback HPC cluster (UCLouvain, Belgium).
+
+BREEZE relies on:
+- [UMEP](https://umep-docs.readthedocs.io/) and [SOLWEIG](https://doi.org/10.1007/s00484-008-0162-7)
+- [pythermalcomfort](https://doi.org/10.1016/j.softx.2020.100578)
+- [python-aqi](https://pypi.org/project/python-aqi/)
+- [OpenRouteService](https://openrouteservice.org/) and [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/)
+- [Copernicus Climate Change Service](https://cds.climate.copernicus.eu/) (UrbClim, ERA5) and [ESA WorldCover](https://doi.org/10.5281/zenodo.7254221)
+
+## Contact
+
+- Yen-Shuo Huang — yen-shuo.huang@uclouvain.be
+- Maider Llaguno-Munitxa (corresponding author) — maider.llaguno@uclouvain.be
+
+Contributions and adaptations to other cities are welcome: please open an issue or a pull request.
