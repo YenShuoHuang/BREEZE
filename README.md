@@ -14,12 +14,16 @@ Code accompanying the paper *BREEZE: Bioclimatic Route Evaluation for Environmen
 If you use BREEZE in your research, please cite:
 
 ```bibtex
-@article{huang2026breeze,
-  title   = {BREEZE: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
-  author  = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
-  journal = {Computers, Environment and Urban Systems},
-  year    = {2026},
-  note    = {In press}
+@article{Huang2027BREEZE,
+  title     = {{BREEZE}: Bioclimatic Route Evaluation for Environmental haZard avoidancE},
+  author    = {Huang, Yen-Shuo and Manoli, Gabriele and Bou-Zeid, Elie and Llaguno-Munitxa, Maider},
+  journal   = {Computers, Environment and Urban Systems},
+  volume    = {132},
+  pages     = {102540},
+  year      = {2027},
+  issn      = {0198-9715},
+  doi       = {10.1016/j.compenvurbsys.2026.102540},
+  url       = {https://www.sciencedirect.com/science/article/pii/S0198971526001420}
 }
 ```
 
